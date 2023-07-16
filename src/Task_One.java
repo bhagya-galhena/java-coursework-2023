@@ -132,7 +132,7 @@ public class Task_One implements Serializable {
                     if (null == cashier[customer_count]) {
                         System.out.print("0" + "   ");
                     } else {
-                        System.out.print(cashier[customer_count].getName() + "   ");
+                        System.out.print("X" + "   ");
                     }
                 else done++;
             }
@@ -167,10 +167,10 @@ public class Task_One implements Serializable {
             for (int j = 0; j < cashiers[i].length; j++) {
                 if (null == cashiers[i][j]) {
                     Scanner scanner = new Scanner(System.in);
-//                    System.out.print("Please enter customer name: ");
-//                    String name = scanner.nextLine();
+                    System.out.print("Please enter customer name: ");
+                    String name = scanner.nextLine();
                     Customer customer = new Customer();
-                    customer.setName("X"); // change
+                    customer.setName(name);
                     cashiers[i][j] = customer;
                     System.out.println("Customer adding success");
                     return;
