@@ -1,8 +1,5 @@
 import java.io.*;
-import java.util.Arrays;
-import java.util.InputMismatchException;
-import java.util.Iterator;
-import java.util.Scanner;
+import java.util.*;
 
 public class Task_One implements Serializable {
     // create 2D array for View all Queues
@@ -179,28 +176,24 @@ public class Task_One implements Serializable {
 
     // create method for View Customers Sorted in alphabetical order
     private void view_customers_sorted_in_alphabetical_order() {
-      int n;
-      String temp;
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Entre the number of customer names you want to sort: ");
-        n = scanner.nextInt();
-        String customer_names []= new String[n];
-        Scanner scanner_1 = new Scanner(System.in);
-        System.out.println("Enter all the customer names you want to sort: ");
-        for (int i = 0; i < n; i++) {
-            customer_names[i] = scanner_1.nextLine();
-        }
-        for (int i = 0; i < n; i++) {
-            for (int j = i + 1 ; j < n; j++) {
-                if(customer_names[i].compareTo(customer_names[j])>0){
-                    temp = customer_names[i];
-                    customer_names[i] = customer_names[j];
-                    customer_names[j] = temp;
+        String names [] = new String[10];
+        int count = 0;
+        for (int i = 0; i < cashiers.length; i++) {
+            for (int j = 0; j < cashiers[i].length; j++) {
+                if (cashiers[i][j] != null) {
+                    String currentName = cashiers[i][j].getName();
+                    int index = count;
+                    while (index > 0 && currentName.compareTo(names[index - 1]) < 0) {
+                        names[index] = names[index - 1];
+                        index--;
+                    }
+                    names[index] = currentName;
+                    count++;
                 }
             }
         }
-        for (String name :customer_names) {
-            System.out.println("Sorted customer names : " + name + " ");
+        for (int i = 0; i < count; i++) {
+            System.out.println(names[i]);
         }
         main_menu();
     }
@@ -220,6 +213,7 @@ public class Task_One implements Serializable {
         } catch (IOException e) {
             System.out.println("Error storing array to file: " + e.getMessage());
         }
+        main_menu();
     }
 
     // Load Program Data from file
