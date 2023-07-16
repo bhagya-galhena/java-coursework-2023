@@ -4,6 +4,7 @@ import java.util.*;
 public class Task_One implements Serializable {
     // create 2D array for View all Queues
     private final Customer[][] cashiers = {{null, null, null, null, null}, {null, null, null}, {null, null}};
+    private int burger_stock = 50;
 
     // Foodies Fave Food Center Main Menu
     private void main_menu() {
@@ -49,14 +50,11 @@ public class Task_One implements Serializable {
         } else if (menu_code.equals("107") || menu_code.equalsIgnoreCase("LPD")) {
             load_programme_data();
         } else if (menu_code.equals("108") || menu_code.equalsIgnoreCase("STK")) {
-            System.out.println("View Remaining burgers Stock.");
-
+            view_remaining_burgers_stock();
         } else if (menu_code.equals("109") || menu_code.equalsIgnoreCase("AFS")) {
-            System.out.println("Add burgers to Stock.");
-
+            add_burgers_to_stock();
         } else if (menu_code.equals("999") || menu_code.equalsIgnoreCase("EXT")) {
-            System.out.println("Exit the Program.");
-
+            System.exit(0);
         } else {
             System.out.println("Invalid code!.Please reenter your code.");
             main_menu();
@@ -68,13 +66,20 @@ public class Task_One implements Serializable {
             Scanner scanner = new Scanner(System.in);
             System.out.print("Enter the cashier number: ");
             int cashier_number = scanner.nextInt();
-            Customer [] temp_cashier = cashiers[cashier_number - 1];
-            for (int i = 0; i < temp_cashier.length; i++) {
-                if (i == temp_cashier.length - 1) {
-                    temp_cashier[i] = null;
-                } else
-                    temp_cashier[i] = temp_cashier[i + 1];
+            Customer[] temp_cashier = cashiers[cashier_number - 1];
+            if (burger_stock >= temp_cashier[0].getBurger_amount()) {
+                burger_stock -= temp_cashier[0].getBurger_amount();
+                for (int i = 0; i < temp_cashier.length; i++) {
+                    if (i == temp_cashier.length - 1) {
+                        temp_cashier[i] = null;
+                    } else {
+                        temp_cashier[i] = temp_cashier[i + 1];
+                    }
+                }
+            } else {
+                System.out.println("Stock is too low to serve");
             }
+            // give warning low stock
             main_menu();
         } catch (InputMismatchException | ArrayIndexOutOfBoundsException inputMismatchException) {
             System.out.println("Invalid cashier number");
@@ -87,7 +92,7 @@ public class Task_One implements Serializable {
             Scanner scanner = new Scanner(System.in);
             System.out.print("Enter the cashier number of the Customer: ");
             int cashier_number = scanner.nextInt();
-            Customer [] temp_cashier = cashiers[cashier_number - 1];
+            Customer[] temp_cashier = cashiers[cashier_number - 1];
             System.out.print("Enter the position of the Customer: ");
             int position = scanner.nextInt();
             if (position > temp_cashier.length) {
@@ -161,10 +166,13 @@ public class Task_One implements Serializable {
             for (int j = 0; j < cashiers[i].length; j++) {
                 if (null == cashiers[i][j]) {
                     Scanner scanner = new Scanner(System.in);
-                    System.out.print("Please enter customer name: ");
-                    String name = scanner.nextLine();
-                    Customer customer = new Customer();
-                    customer.setName(name);
+                    System.out.print("Please enter customer first name: ");
+                    String first_name = scanner.nextLine();
+                    System.out.print("Please enter customer second name: ");
+                    String second_name = scanner.nextLine();
+                    System.out.print("Please enter customer burger count: ");
+                    int burger_count = scanner.nextInt();
+                    Customer customer = new Customer(first_name, second_name, burger_count);
                     cashiers[i][j] = customer;
                     System.out.println("Customer adding success");
                     return;
@@ -176,12 +184,12 @@ public class Task_One implements Serializable {
 
     // create method for View Customers Sorted in alphabetical order
     private void view_customers_sorted_in_alphabetical_order() {
-        String names [] = new String[10];
+        String[] names = new String[10];
         int count = 0;
-        for (int i = 0; i < cashiers.length; i++) {
-            for (int j = 0; j < cashiers[i].length; j++) {
-                if (cashiers[i][j] != null) {
-                    String currentName = cashiers[i][j].getName();
+        for (Customer[] cashier : cashiers) {
+            for (int j = 0; j < cashier.length; j++) {
+                if (cashier[j] != null) {
+                    String currentName = cashier[j].getFirst_name() + " " + cashier[j].getLast_name();
                     int index = count;
                     while (index > 0 && currentName.compareTo(names[index - 1]) < 0) {
                         names[index] = names[index - 1];
@@ -204,7 +212,12 @@ public class Task_One implements Serializable {
             for (int i = 0; i < cashiers.length; i++) {
                 for (int j = 0; j < cashiers[i].length; j++) {
                     if (cashiers[i][j] != null) {
-                        writer.write(cashiers[i][j].getName() + "-" + i + "-" + j);
+                        writer.write(
+                                cashiers[i][j].getFirst_name() + "-"
+                                        + cashiers[i][j].getLast_name() + "-"
+                                        + cashiers[i][j].getBurger_amount() + "-"
+                                        + i + "-" + j
+                        );
                         writer.newLine();
                     }
                 }
@@ -222,7 +235,9 @@ public class Task_One implements Serializable {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] line_data = line.split("-");
-                cashiers[Integer.parseInt(line_data[1])][Integer.parseInt(line_data[2])] = new Customer(line_data[0]);
+                cashiers[Integer.parseInt(line_data[3])][Integer.parseInt(line_data[4])] = new Customer(
+                        line_data[0], line_data[1], Integer.parseInt(line_data[2])
+                );
             }
             System.out.println("Array loading from file successfully.");
         } catch (IOException e) {
@@ -233,29 +248,16 @@ public class Task_One implements Serializable {
 
     // View Remaining burgers Stock.
     private void view_remaining_burgers_stock() {
-        Scanner scanner_1 = new Scanner(System.in);
-        System.out.print("How many burgers are there in the stock: ");
-        int burgers = scanner_1.nextInt();
+        System.out.println("Remaining burger stock is: " + burger_stock);
+        main_menu();
     }
 
-    //Add burgers to Stock
-    int burgers_count, update;
-
     private void add_burgers_to_stock() {
-        Scanner scanner_1 = new Scanner(System.in);
-        System.out.print("How many burgers are there in the stock: ");
-        int burgers = scanner_1.nextInt();
-
-        Scanner scanner_2 = new Scanner(System.in);
-        System.out.print("please entered the number of burgers add to the stock: ");
-        int burgers_ = scanner_2.nextInt();
-
-        if (burgers_count == 50) {
-            System.out.println("Burger stock id full!");
-        } else if (burgers_count <= 10) {
-            update = burgers + burgers_;
-            System.out.println("Update a new stock: " + update);
-        }
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the burger amount: ");
+        int burger_amount = scanner.nextInt();
+        burger_stock += burger_amount;
+        main_menu();
     }
 
     public static void main(String[] args) throws IOException {
