@@ -49,11 +49,8 @@ public class Task_One implements Serializable {
 
         } else if (menu_code.equals("106") || menu_code.equalsIgnoreCase("SPD")) {
             store_program_data();
-//            System.out.println("Store Program Data into file.");
-
         } else if (menu_code.equals("107") || menu_code.equalsIgnoreCase("LPD")) {
-            System.out.println("Load Program Data from file.");
-
+            load_programme_data();
         } else if (menu_code.equals("108") || menu_code.equalsIgnoreCase("STK")) {
             System.out.println("View Remaining burgers Stock.");
 
@@ -211,10 +208,10 @@ public class Task_One implements Serializable {
     // Store Program Data into file.
     private void store_program_data() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("coursework_data_file.txt"))) {
-            for (Customer[] cashier : cashiers) {
-                for (Customer customer : cashier) {
-                    if (customer != null) {
-                        writer.write(customer.getName());
+            for (int i = 0; i < cashiers.length; i++) {
+                for (int j = 0; j < cashiers[i].length; j++) {
+                    if (cashiers[i][j] != null) {
+                        writer.write(cashiers[i][j].getName() + "-" + i + "-" + j);
                         writer.newLine();
                     }
                 }
@@ -226,21 +223,18 @@ public class Task_One implements Serializable {
     }
 
     // Load Program Data from file
-    private void load_programme_data() throws IOException {
-        File file_2 = new File("coursework_data_file.txt");
-        FileOutputStream programme_data = new FileOutputStream(file_2, true);
-        ObjectOutputStream object_out = new ObjectOutputStream(programme_data);
-
-        Iterator programme = Arrays.stream(cashiers).iterator();
-        while (programme.hasNext()) {
-            Task_One counters = (Task_One) programme.next();
-            object_out.writeObject(counters);
+    private void load_programme_data() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("coursework_data_file.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] line_data = line.split("-");
+                cashiers[Integer.parseInt(line_data[1])][Integer.parseInt(line_data[2])] = new Customer(line_data[0]);
+            }
+            System.out.println("Array loading from file successfully.");
+        } catch (IOException e) {
+            System.out.println("Error loading array from file: " + e.getMessage());
         }
-        try {
-            System.out.println(file_2.createNewFile());
-        } catch (Exception e) {
-            System.out.println(e);
-        }
+        main_menu();
     }
 
     // View Remaining burgers Stock.
