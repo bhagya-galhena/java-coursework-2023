@@ -210,18 +210,19 @@ public class Task_One implements Serializable {
 
     // Store Program Data into file.
     private void store_program_data() {
-//        File file = new File("coursework_file.txt");
-//        try {
-//            System.out.println(file.createNewFile());
-//            Scanner reader = new Scanner(file);
-//            while (reader.hasNextLine()) {
-//                System.out.println(reader.nextLine());
-//            }
-//            reader.close();
-//        } catch (Exception e) {
-//            System.out.println(e);
-//        }
-
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("coursework_data_file.txt"))) {
+            for (Customer[] cashier : cashiers) {
+                for (Customer customer : cashier) {
+                    if (customer != null) {
+                        writer.write(customer.getName());
+                        writer.newLine();
+                    }
+                }
+            }
+            System.out.println("Array stored to file successfully.");
+        } catch (IOException e) {
+            System.out.println("Error storing array to file: " + e.getMessage());
+        }
     }
 
     // Load Program Data from file
