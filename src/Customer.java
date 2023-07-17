@@ -35,4 +35,8 @@ public class Customer {
     public void setBurger_amount(int burger_amount) {
         this.burger_amount = burger_amount;
     }
+
+    public int getBurgerAmount() {
+        return 0;
+    }
 }

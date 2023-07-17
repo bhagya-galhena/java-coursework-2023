@@ -1,11 +1,17 @@
 import java.io.*;
 import java.util.*;
 
-public class Task_One implements Serializable {
+public class Task_One implements Serializable{
+    private static final int LOW_STOCK = 10;
     // create 2D array for View all Queues
     private final Customer[][] cashiers = {{null, null, null, null, null}, {null, null, null}, {null, null}};
     private int burger_stock = 50;
 
+    // create waiting list
+    private final Customer[] waitingList = new Customer[5];
+    private int waitingListSize = 0;
+    private int waitingListFront = 0;
+    private int waitingListRear = -1;
     // Foodies Fave Food Center Main Menu
     private void main_menu() {
         System.out.println("-------------------------------------------------------------------------" +
@@ -24,6 +30,7 @@ public class Task_One implements Serializable {
         System.out.println("107 or LPD: Load Program Data from file");
         System.out.println("108 or STK: View Remaining burgers Stock.");
         System.out.println("109 or AFS: Add burgers to Stock");
+        System.out.println("110 or IFQ : view income for each queue");
         System.out.println("999 or EXT: Exit the Program.");
 
         Scanner scanner = new Scanner(System.in);
@@ -53,6 +60,10 @@ public class Task_One implements Serializable {
             view_remaining_burgers_stock();
         } else if (menu_code.equals("109") || menu_code.equalsIgnoreCase("AFS")) {
             add_burgers_to_stock();
+        }else if (menu_code.equals("110") || menu_code.equalsIgnoreCase("IFQ")) {
+            view_income_for_each_queue();
+        }else if (menu_code.equals("112") || menu_code.equalsIgnoreCase("GUI")) {
+
         } else if (menu_code.equals("999") || menu_code.equalsIgnoreCase("EXT")) {
             System.exit(0);
         } else {
@@ -76,8 +87,18 @@ public class Task_One implements Serializable {
                         temp_cashier[i] = temp_cashier[i + 1];
                     }
                 }
+                if (burger_stock < LOW_STOCK) {
+                    System.out.println("Warning: Low stock!");
+                }
             } else {
                 System.out.println("Stock is too low to serve");
+            }
+            if (waitingListSize > 0) {
+                temp_cashier[temp_cashier.length - 1] = waitingList[waitingListFront];
+                waitingList[waitingListFront] = null;
+                waitingListFront = (waitingListFront + 1) % waitingList.length;
+                waitingListSize--;
+                System.out.println("Next customer from the waiting list added to Cashier " + cashier_number + " Queue.");
             }
             // give warning low stock
             main_menu();
@@ -162,6 +183,7 @@ public class Task_One implements Serializable {
 
     // create method for  Add customer to a Queue
     private void add_customer_to_a_queue() {
+        boolean added_to_queue = false;
         for (int i = 0; i < cashiers.length; i++) {
             for (int j = 0; j < cashiers[i].length; j++) {
                 if (null == cashiers[i][j]) {
@@ -180,6 +202,27 @@ public class Task_One implements Serializable {
             }
         }
         System.out.println("All Queues are full");
+        addToWaitingList();
+        main_menu();
+    }
+    // create method for add to waiting list for customers
+    private void addToWaitingList() {
+        if (waitingListSize == waitingList.length) {
+            System.out.println("Waiting list is full. Cannot add more customers.");
+            return;
+        }
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Please enter customer first name: ");
+        String first_name = scanner.nextLine();
+        System.out.print("Please enter customer second name: ");
+        String second_name = scanner.nextLine();
+        System.out.print("Please enter customer burger count: ");
+        int burger_count = scanner.nextInt();
+        Customer customer = new Customer(first_name, second_name, burger_count);
+        waitingListRear = (waitingListRear + 1) % waitingList.length;
+        waitingList[waitingListRear] = customer;
+        waitingListSize++;
+        System.out.println("Customer added to the waiting list.");
     }
 
     // create method for View Customers Sorted in alphabetical order
@@ -259,6 +302,24 @@ public class Task_One implements Serializable {
         burger_stock += burger_amount;
         main_menu();
     }
+    private void view_income_for_each_queue() {
+        for (int i = 0; i < cashiers.length; i++) {
+            int totalIncome = calculateQueueIncome(cashiers[i]);
+            System.out.println("Cashier " + (i + 1) + " Income: Rs." + totalIncome);
+        }
+        main_menu();
+    }
+
+    private int calculateQueueIncome(Customer[] queue) {
+        int totalIncome = 0;
+        for (Customer customer : queue) {
+            if (customer != null) {
+                totalIncome += customer.getBurgerAmount() * 650;
+            }
+        }
+        return totalIncome;
+    }
+
 
     public static void main(String[] args) throws IOException {
         // coursework name and student name
