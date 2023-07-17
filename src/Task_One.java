@@ -31,6 +31,7 @@ public class Task_One implements Serializable{
         System.out.println("108 or STK: View Remaining burgers Stock.");
         System.out.println("109 or AFS: Add burgers to Stock");
         System.out.println("110 or IFQ : view income for each queue");
+        System.out.println("112 or GUI : view GUI");
         System.out.println("999 or EXT: Exit the Program.");
 
         Scanner scanner = new Scanner(System.in);
@@ -63,13 +64,16 @@ public class Task_One implements Serializable{
         }else if (menu_code.equals("110") || menu_code.equalsIgnoreCase("IFQ")) {
             view_income_for_each_queue();
         }else if (menu_code.equals("112") || menu_code.equalsIgnoreCase("GUI")) {
-
+            view_GUI();
         } else if (menu_code.equals("999") || menu_code.equalsIgnoreCase("EXT")) {
             System.exit(0);
         } else {
             System.out.println("Invalid code!.Please reenter your code.");
             main_menu();
         }
+    }
+
+    private void view_GUI() {
     }
 
     private void remove_a_servedCustomer() {
