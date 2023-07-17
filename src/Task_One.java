@@ -12,6 +12,7 @@ public class Task_One implements Serializable{
     private int waitingListSize = 0;
     private int waitingListFront = 0;
     private int waitingListRear = -1;
+
     // Foodies Fave Food Center Main Menu
     private void main_menu() {
         System.out.println("-------------------------------------------------------------------------" +
@@ -51,8 +52,6 @@ public class Task_One implements Serializable{
             remove_a_servedCustomer();
         } else if (menu_code.equals("105") || menu_code.equalsIgnoreCase("VCS")) {
             view_customers_sorted_in_alphabetical_order();
-//            System.out.println("View Customers Sorted in alphabetical order (Do not use library sort routine)");
-
         } else if (menu_code.equals("106") || menu_code.equalsIgnoreCase("SPD")) {
             store_program_data();
         } else if (menu_code.equals("107") || menu_code.equalsIgnoreCase("LPD")) {
@@ -73,9 +72,12 @@ public class Task_One implements Serializable{
         }
     }
 
+    // create method for view GUI
     private void view_GUI() {
+        main_menu();
     }
 
+    // create method for remove a served customer
     private void remove_a_servedCustomer() {
         try {
             Scanner scanner = new Scanner(System.in);
@@ -112,6 +114,7 @@ public class Task_One implements Serializable{
         }
     }
 
+    // create method for remove customer from queue
     private void remove_customer_fromQueue() {
         try {
             Scanner scanner = new Scanner(System.in);
@@ -209,6 +212,7 @@ public class Task_One implements Serializable{
         addToWaitingList();
         main_menu();
     }
+
     // create method for add to waiting list for customers
     private void addToWaitingList() {
         if (waitingListSize == waitingList.length) {
@@ -299,6 +303,7 @@ public class Task_One implements Serializable{
         main_menu();
     }
 
+    // create method for add burgers to stock
     private void add_burgers_to_stock() {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter the burger amount: ");
@@ -306,6 +311,8 @@ public class Task_One implements Serializable{
         burger_stock += burger_amount;
         main_menu();
     }
+
+    // create method for view income for each queue
     private void view_income_for_each_queue() {
         for (int i = 0; i < cashiers.length; i++) {
             int totalIncome = calculateQueueIncome(cashiers[i]);
@@ -314,6 +321,7 @@ public class Task_One implements Serializable{
         main_menu();
     }
 
+    // create mehod for calculate queue Income
     private int calculateQueueIncome(Customer[] queue) {
         int totalIncome = 0;
         for (Customer customer : queue) {
